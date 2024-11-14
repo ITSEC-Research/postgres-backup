@@ -1,0 +1,41 @@
+# Use this in cronjobs
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: postgresql-backup-k8s-job
+spec:
+  # You can adjust anything here
+  schedule: "0 1 * * 0"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: postgresql-backup-job-pod
+            image: your-registry.dev/itsecasia-soc/backup-postgres:latest
+            env:
+              - name: GCP_ACCESS_KEY
+                value: "ACCESS_KEY"
+              - name: GCP_SECRET_KEY
+                value: "SECRET_KEY"
+              - name: BUCKET_GCP
+                value: "path/to/bucket"
+              - name: PG_PASS
+                value: "YOUR_POSGRES_PASS"
+              - name: PG_USER
+                value: "POSGRES_USER"
+              - name: PG_HOST
+                value: "postgres.your-name-space.svc.cluster.local"
+              - name: PG_PORT
+                value: "5432"
+              - name: WEBHOOK_GOOGLE_CHAT
+                value: "WEBHOOKGOOGLESPACE"
+            imagePullPolicy: Always
+            args:
+            - /bin/bash
+            - -c
+            - bash /root/postgres-backup.sh;
+          restartPolicy: OnFailure
+          imagePullSecrets:
+          - name: ibregcred
+      backoffLimit: 3

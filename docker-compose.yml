@@ -1,0 +1,19 @@
+version: "3.8"
+
+services:
+  postgres-backup:
+    image: itsecasia-soc/backup-postgres:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      GCP_ACCESS_KEY: "ACCESS_KEY"
+      GCP_SECRET_KEY: "SECRET_KEY"
+      BUCKET_GCP: "path/to/bucket/test-backup"
+      PROJECTNAME: "name-project01"
+      PG_PASS: "postgres"
+      PG_USER: "postgres"
+      PG_HOST: "127.0.0.1"
+      PG_PORT: "5432"
+      WEBHOOK_GOOGLE_CHAT: "WEBHOOK_URL"
+    command: bash /root/postgres-backup.sh
